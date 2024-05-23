@@ -107,14 +107,14 @@ function setEventListeners() {
   });
 }
 
-export const MAX_SONGS_REQUESTABLE = 100;
-export const MIN_SONGS_REQUESTABLE = 1;
-export const DEFAULT_SONGS_TO_ADD = 25;
-export const BATCH_SIZE = 100; // 100 is the max songs that can be added at once per Spotify's Web API
-export const EARLIEST_RELEASE_YEAR = 1860; // Year of oldest playable music recording known
-export const API_DELAY = 200; // Set to e.g. 200 if need delay for API rate limiting
+const MAX_SONGS_REQUESTABLE = 100;
+const MIN_SONGS_REQUESTABLE = 1;
+const DEFAULT_SONGS_TO_ADD = 25;
+const BATCH_SIZE = 100; // 100 is the max songs that can be added at once per Spotify's Web API
+const EARLIEST_RELEASE_YEAR = 1860; // Year of oldest playable music recording known
+const API_DELAY = 200; // Set to e.g. 200 if need delay for API rate limiting
 
-export const DEFAULT_FILTERS = {
+const DEFAULT_FILTERS = {
   audiobooksCheckbox: true, // Exclude audiobook chapters (note that audiobooks not formatted as music tracks are excluded regardless by nature) - ON by default
   happyBirthdayCheckbox: true, // Exclude happy birthday song variants (song titles formatted as "Happy Birthday to X") - ON by default
   classicalCheckbox: false, // Exclude tracks with "Opus" or variations thereof in the title - OFF by default
@@ -122,13 +122,13 @@ export const DEFAULT_FILTERS = {
   nineteenHundredsCheckbox: false, // Exclude tracks with Spotify-listed release date prior to 2000 - OFF by default
 };
 
-export function updateProgressIndicator(songsFound, numberOfSongs) {
+function updateProgressIndicator(songsFound, numberOfSongs) {
   const progressIndicator = document.getElementById("progressIndicator");
   const newProgressIndicatorText = `Finding tracks...${songsFound} / ${numberOfSongs}`;
   progressIndicator.innerText = newProgressIndicatorText;
 }
 
-export async function createPlaylistAndAddTracks(
+async function createPlaylistAndAddTracks(
   numberOfSongs = DEFAULT_SONGS_TO_ADD,
   earliestReleaseYear = EARLIEST_RELEASE_YEAR,
   filters = DEFAULT_FILTERS
@@ -535,7 +535,6 @@ export async function createPlaylistAndAddTracks(
 
   //End of definitions
 
-  
   //Function execution begins here
 
   //Exit if number of songs desired is not within the allowed range
@@ -573,7 +572,7 @@ export async function createPlaylistAndAddTracks(
   }
 }
 
-export const bookTitles = [
+const bookTitles = [
   "Chapter \\d+", // English
   "Chapitre \\d+", // French
   "Capítulo \\d+", // Spanish
@@ -594,7 +593,7 @@ export const bookTitles = [
   "del\\d+",
 ];
 
-export const classicalTitles = [
+const classicalTitles = [
   "Opus \\d+",
   "Op. \\d+",
   "Op \\d+",
@@ -614,10 +613,10 @@ export const classicalTitles = [
   // "D \\d+",
 ];
 
-export const happyBirthdayTitles = ["Happy Birthday To"];
+const happyBirthdayTitles = ["Happy Birthday To"];
 
 //Unicode ranges
-export const ranges = [
+const ranges = [
   { min: 32, max: 126 }, // Basic ASCII characters
   { min: 128, max: 255 }, // Extended ASCII characters
   { min: 256, max: 383 }, // Latin Extended-A
