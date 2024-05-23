@@ -72,8 +72,8 @@ function extensionInterface() {
   container.innerHTML = `
   <input
     type="number"
-    id="numberOfSongsBox"
-    name="numberOfSongsBox"
+    id="number-of-songs-box"
+    name="number-of-songs-box"
     placeholder="Enter desired playlist size (max 100 tracks, ~25/30 = faster)"
     value='25'
     min='1'
@@ -81,13 +81,13 @@ function extensionInterface() {
   />
   <br />
   <br />
-  <span id="progressIndicator" name="progressIndicator">
+  <span id="progress-indicator" name="progress-indicator">
     '0 / 0'
   </span>
   &emsp;
   <button
     value="Submit"
-    id="createPlaylistAndAddTracksButton"
+    id="create-playlist-and-add-tracks-button"
     style="float: right;"
   >
     Create Playlist
@@ -98,10 +98,10 @@ function extensionInterface() {
 
 function setEventListeners() {
   const createPlaylistAndAddTracksButton = document.getElementById(
-    "createPlaylistAndAddTracksButton"
+    "create-playlist-and-add-tracks-button"
   );
   createPlaylistAndAddTracksButton.addEventListener("click", () => {
-    const numberOfSongsBox = document.getElementById("numberOfSongsBox");
+    const numberOfSongsBox = document.getElementById("number-of-songs-box");
     const numberOfSongs = parseInt(numberOfSongsBox.value);
     createPlaylistAndAddTracks(numberOfSongs);
   });
@@ -123,7 +123,7 @@ const DEFAULT_FILTERS = {
 };
 
 function updateProgressIndicator(songsFound, numberOfSongs) {
-  const progressIndicator = document.getElementById("progressIndicator");
+  const progressIndicator = document.getElementById("progress-indicator");
   const newProgressIndicatorText = `Finding tracks...${songsFound} / ${numberOfSongs}`;
   progressIndicator.innerText = newProgressIndicatorText;
 }
@@ -555,7 +555,7 @@ async function createPlaylistAndAddTracks(
   compileExclusions(filters);
 
   songsFound = 0;
-  const progressIndicator = document.getElementById("progressIndicator");
+  const progressIndicator = document.getElementById("progress-indicator");
   progressIndicator.innerText = "Finding/creating playlist...";
 
   try {
@@ -567,7 +567,7 @@ async function createPlaylistAndAddTracks(
     console.error("An error occurred:", error);
 
     // Error: Update HTML elements
-    document.getElementById("progressIndicator").innerText =
+    document.getElementById("progress-indicator").innerText =
       "Error occurred. Please try again.";
   }
 }
