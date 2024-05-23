@@ -111,28 +111,16 @@ export const MAX_SONGS_REQUESTABLE = 100;
 export const MIN_SONGS_REQUESTABLE = 1;
 export const DEFAULT_SONGS_TO_ADD = 25;
 export const BATCH_SIZE = 100; // 100 is the max songs that can be added at once per Spotify's Web API
-export const EARLIEST_RELEASE_YEAR = 1860;
+export const EARLIEST_RELEASE_YEAR = 1860; // Year of oldest playable music recording known
 export const API_DELAY = 200; // Set to e.g. 200 if need delay for API rate limiting
 
 export const DEFAULT_FILTERS = {
-  audiobooksCheckbox: true, // Exclude audiobook chapters (note that audiobooks not formatted as music tracks are excluded regardless) - ON by default
+  audiobooksCheckbox: true, // Exclude audiobook chapters (note that audiobooks not formatted as music tracks are excluded regardless by nature) - ON by default
   happyBirthdayCheckbox: true, // Exclude happy birthday song variants (song titles formatted as "Happy Birthday to X") - ON by default
   classicalCheckbox: false, // Exclude tracks with "Opus" or variations thereof in the title - OFF by default
   eighteenHundredsCheckbox: false, // Exclude tracks with Spotify-listed release date prior to 1900 - OFF by default
   nineteenHundredsCheckbox: false, // Exclude tracks with Spotify-listed release date prior to 2000 - OFF by default
 };
-
-export function copyResultsToClipboard() {
-  const addedSongsDiv = document.getElementById("added-songs");
-  const textToCopy = addedSongsDiv.innerText;
-
-  const tempTextarea = document.createElement("textarea");
-  tempTextarea.value = textToCopy;
-  document.body.appendChild(tempTextarea);
-  tempTextarea.select();
-  document.execCommand("copy");
-  document.body.removeChild(tempTextarea);
-}
 
 export function updateProgressIndicator(songsFound, numberOfSongs) {
   const progressIndicator = document.getElementById("progressIndicator");
@@ -143,13 +131,10 @@ export function updateProgressIndicator(songsFound, numberOfSongs) {
 export async function createPlaylistAndAddTracks(
   numberOfSongs = DEFAULT_SONGS_TO_ADD,
   earliestReleaseYear = EARLIEST_RELEASE_YEAR,
-  filters = DEFAULT_FILTERS,
-  pastAddedSongs = [],
-  existingPlaylistTracks = []
+  filters = DEFAULT_FILTERS
 ) {
   //Long list of definitions begins
   const addedSongsDiv = document.getElementById("added-songs");
-  const consoleDiv = document.getElementById("console-div");
 
   const addedDuringRuntime = [];
   const addedSongs = [];
@@ -217,12 +202,8 @@ export async function createPlaylistAndAddTracks(
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
 
-  const addTracksToPlaylist = async (
-    accessToken,
-    playlistId,
-    numberOfSongs
-  ) => {
-    const searchTrackAndAddToPlaylist = async (accessToken, playlistUrl) => {
+  const addTracksToPlaylist = async (playlistId, numberOfSongs) => {
+    const searchTrackAndAddToPlaylist = async () => {
       const generateSearchCriteria = () => {
         const getRandomScenario = () => {
           const scenarios = [
@@ -321,6 +302,7 @@ export async function createPlaylistAndAddTracks(
 
         if (response.status === 429) {
           console.error("Too Many Requests: Please try again later.");
+          progressIndicator.innerText = `Too Many Requests: Please try again later.`;
           return; // Stop the function execution
         }
         if (!response.ok) {
@@ -345,14 +327,6 @@ export async function createPlaylistAndAddTracks(
             track: track,
           };
           allQueriesAndTracks.push(queryDetails);
-
-          //Check if the track is in past added tracks
-          if (pastAddedSongs.some((song) => song.uri === trackUri)) {
-            logToConsole(
-              `Track already added from a past run: ${trackUri} from ${searchQuery}. Skipping.`
-            );
-            return null;
-          }
 
           // Check if the track should be excluded using regular expressions
           const isExcluded = trackTitleStringsToExclude.some((titleRegex) =>
@@ -410,52 +384,6 @@ export async function createPlaylistAndAddTracks(
             return null;
           }
 
-          // Check if the track is already in the playlist by URI
-          let trackURInPlaylist = false;
-
-          for (let i = 0; i < existingPlaylistTracks.length; i++) {
-            const playlistTrack = existingPlaylistTracks[i];
-
-            if (playlistTrack && playlistTrack.uri === trackUri) {
-              trackURInPlaylist = true;
-              break;
-            }
-          }
-
-          if (trackURInPlaylist) {
-            logToConsole(
-              `Duplicate track (already in playlist) for search: ${searchQuery}. Skipping.`
-            );
-            return null;
-          }
-
-          // Check if the track is already in the playlist by name, album, and artist
-          let trackMatchInPlaylist = false;
-
-          for (let i = 0; i < existingPlaylistTracks.length; i++) {
-            const playlistTrack = existingPlaylistTracks[i];
-            if (
-              playlistTrack &&
-              playlistTrack.name.toLowerCase().trim() ===
-                trackName.toLowerCase().trim() &&
-              playlistTrack.album.toLowerCase().trim() ===
-                trackAlbum.toLowerCase().trim() &&
-              playlistTrack.artist.toLowerCase().trim() ===
-                trackArtist.toLowerCase().trim()
-            ) {
-              trackMatchInPlaylist = true;
-              break;
-            }
-          }
-
-          if (trackMatchInPlaylist) {
-            logToConsole(
-              `Duplicate Track (already in playlist) for search: ${searchQuery}. Skipping.`
-            );
-            return null;
-          }
-          logToConsole(`Track found for search: ${searchQuery}`);
-
           //Push the track to addedSongs array
 
           addedSongs.push({
@@ -466,10 +394,7 @@ export async function createPlaylistAndAddTracks(
             uri: trackUri,
           });
 
-          //Push the track to pastAddedSongs array
-          pastAddedSongs.push({
-            uri: trackUri,
-          });
+       
 
           addedDuringRuntime.push(...addedSongs);
           songsFound++;
@@ -493,7 +418,7 @@ export async function createPlaylistAndAddTracks(
         const maxRetries = 3; // Replace with the desired maximum number of retries
 
         while (retryCount < maxRetries) {
-          const addResponse = await Spicetify.CosmosAsync.get(
+          const addResponse = await Spicetify.CosmosAsync.post(
             playlistUrl,
             JSON.stringify({
               uris: trackBatch,
@@ -685,7 +610,7 @@ export async function createPlaylistAndAddTracks(
         name: "Random Tracks from All of Spotify",
         public: true,
         description:
-          "Created with Sufficiently Random Playlist Maker for Spotify",
+          "Created with Spicetify Randomish Playlist Maker",
       })
     );
 
