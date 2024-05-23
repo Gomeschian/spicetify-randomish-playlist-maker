@@ -136,7 +136,7 @@ export function copyResultsToClipboard() {
 
 export function updateProgressIndicator(songsFound, numberOfSongs) {
   const progressIndicator = document.getElementById("progressIndicator");
-  const newProgressIndicatorText = `${songsFound} / ${numberOfSongs}`;
+  const newProgressIndicatorText = `Finding tracks...${songsFound} / ${numberOfSongs}`;
   progressIndicator.innerText = newProgressIndicatorText;
 }
 
@@ -474,7 +474,7 @@ export async function createPlaylistAndAddTracks(
           addedDuringRuntime.push(...addedSongs);
           songsFound++;
 
-          progressIndicator.innerText = `Finding random tracks...${songsFound}/${numberOfSongs}`;
+          updateProgressIndicator(songsFound, numberOfSongs);
           return trackUri;
         } else {
           const errorMessage = `No track found for search: ${searchQuery}`;
