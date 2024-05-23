@@ -74,15 +74,19 @@ function extensionInterface() {
     type="number"
     id="number-of-songs-box"
     name="number-of-songs-box"
-    placeholder="Enter desired playlist size (max 100 tracks, ~25/30 = faster)"
     value='25'
     min='1'
     max='100'
   />
   <br />
   <br />
+  <label for="number-of-songs-box">Enter desired playlist size (max 100 tracks, 100 may take a minute)</label>
+<br />
+<br />
+
+
   <span id="progress-indicator" name="progress-indicator">
-    '0 / 0'
+    0 / 0
   </span>
   &emsp;
   <button
@@ -101,7 +105,10 @@ function setEventListeners() {
     "create-playlist-and-add-tracks-button"
   );
   createPlaylistAndAddTracksButton.addEventListener("click", () => {
-    createPlaylistAndAddTracks();
+    createPlaylistAndAddTracksButton.disabled = true;
+    createPlaylistAndAddTracks().finally(() => {
+      createPlaylistAndAddTracksButton.disabled = false;
+    });
   });
 }
 
@@ -451,7 +458,7 @@ async function createPlaylistAndAddTracks(
     const response = await Spicetify.CosmosAsync.post(
       createPlaylistUrl,
       JSON.stringify({
-        name: "Random Tracks from All of Spotify",
+        name: "Randomish Tracks from All of Spotify",
         public: true,
         description: "Created with Spicetify Randomish Playlist Maker",
       })
@@ -502,7 +509,7 @@ async function createPlaylistAndAddTracks(
 
   //End of definitions
 
-  //Function execution begins here
+  //FUNCTION EXECUTION BEGINS HERE
 
   //Exit if number of songs desired is not within the allowed range
   if (
