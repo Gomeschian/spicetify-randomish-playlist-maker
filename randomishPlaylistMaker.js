@@ -101,9 +101,7 @@ function setEventListeners() {
     "create-playlist-and-add-tracks-button"
   );
   createPlaylistAndAddTracksButton.addEventListener("click", () => {
-    const numberOfSongsBox = document.getElementById("number-of-songs-box");
-    const numberOfSongs = parseInt(numberOfSongsBox.value);
-    createPlaylistAndAddTracks(numberOfSongs);
+    createPlaylistAndAddTracks();
   });
 }
 
@@ -129,12 +127,13 @@ function updateProgressIndicator(songsFound, numberOfSongs) {
 }
 
 async function createPlaylistAndAddTracks(
-  numberOfSongs = DEFAULT_SONGS_TO_ADD,
+  numberOfSongs = parseInt(
+    document.getElementById("number-of-songs-box").value
+  ),
   earliestReleaseYear = EARLIEST_RELEASE_YEAR,
   filters = DEFAULT_FILTERS
 ) {
   //Long list of definitions begins
-  const addedSongsDiv = document.getElementById("added-songs");
 
   const addedDuringRuntime = [];
   const addedSongs = [];
