@@ -509,8 +509,8 @@ async function createPlaylistAndAddTracks(
     numberOfSongs < MIN_SONGS_REQUESTABLE ||
     numberOfSongs > MAX_SONGS_REQUESTABLE
   ) {
-    progressIndicator.innerText = `Please choose a number of songs between ${MIN_SONGS_REQUESTABLE} and ${MAX_SONGS_REQUESTABLE}`;
-
+    let errorMessage = `Please choose a number of songs between ${MIN_SONGS_REQUESTABLE} and ${MAX_SONGS_REQUESTABLE}`;
+    Spicetify.showNotification(errorMessage);
     return;
   }
 
