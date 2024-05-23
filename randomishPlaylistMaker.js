@@ -394,8 +394,6 @@ export async function createPlaylistAndAddTracks(
             uri: trackUri,
           });
 
-       
-
           addedDuringRuntime.push(...addedSongs);
           songsFound++;
 
@@ -411,7 +409,7 @@ export async function createPlaylistAndAddTracks(
         console.error(errorMessage);
       }
     };
-    const addBatchToPlaylist = async (accessToken, playlistUrl, trackBatch) => {
+    const addBatchToPlaylist = async (playlistUrl, trackBatch) => {
       progressIndicator.innerText = `Adding tracks to playlist...`;
       try {
         let retryCount = 0;
@@ -473,135 +471,14 @@ export async function createPlaylistAndAddTracks(
       }
 
       // Batch addition of tracks to the playlist
-      await addBatchToPlaylist(accessToken, playlistUrl, trackBatch);
+      await addBatchToPlaylist(playlistUrl, trackBatch);
 
       // Introduce a delay between batches to avoid rate limits
       await new Promise((resolve) => setTimeout(resolve, API_DELAY));
     }
-
-    // Display added songs information
-    displayAddedSongsInfo(addedSongs);
-  };
-  const displayAddedSongsInfo = (addedSongs) => {
-    if (addedSongs.length === 0) {
-      return;
-    }
-
-    addedSongsDiv.classList.remove("hidden");
-
-    addedSongsDiv.innerHTML += `<p><strong>Added Songs: ${new Date().toLocaleString()}</strong></p>`;
-
-    addedSongs.forEach((song, index) => {
-      const songNumber = index + 1;
-      addedSongsDiv.innerHTML += `<p>${songNumber}. ${song.artist} - ${song.name} | ${song.album}, ${song.year}  (${song.uri})</p>`;
-    });
-
-    // Scroll to the bottom to show the latest added songs
-    addedSongsDiv.scrollTop = addedSongsDiv.scrollHeight;
   };
 
-  const getPlaylistTracks = async (accessToken, playlistTracksUrl) => {
-    const tracksPerPage = 100; // Spotify API returns up to 100 tracks per request
-    progressIndicator.innerText = `Reading playlist tracks...`;
-    logToConsole("Reading playlist tracks...");
-    try {
-      let offset = 0;
-      let hasNextPage = true;
-
-      while (hasNextPage) {
-        const response = await Spicetify.CosmosAsync.get(
-          `${playlistTracksUrl}?offset=${offset}&limit=${tracksPerPage}`
-        );
-
-        if (!response.ok) {
-          throw new Error(
-            `Error fetching playlist tracks: ${response.status} ${response.statusText}`
-          );
-        }
-
-        const data = await response.json();
-        const currentTracks = data.items.map((item) => ({
-          name: item.track.name,
-          album: item.track.album.name,
-          artist: item.track.artists[0].name,
-          uri: item.track.uri,
-        }));
-        if (currentTracks.length > 0) {
-          existingPlaylistTracks.push(...currentTracks);
-          offset += tracksPerPage;
-        } else {
-          hasNextPage = false;
-        }
-      }
-
-      console.log("Existing Playlist Tracks:", existingPlaylistTracks);
-
-      return existingPlaylistTracks;
-    } catch (error) {
-      console.error("Error fetching existing playlist tracks:", error);
-      throw error;
-    }
-  };
-
-  const searchPlaylist = async (accessToken, playlistName) => {
-    let offset = 0;
-    let playlist = null;
-    logToConsole("Getting playlist...");
-    try {
-      while (!playlist) {
-        const searchUrl = `https://api.spotify.com/v1/me/playlists?limit=50&offset=${offset}`;
-
-        logToConsole(`Searching for playlists at offset ${offset}`);
-        const response = await Spicetify.CosmosAsync.get(searchUrl);
-
-        console.log("Received response:", response);
-
-        if (!response.ok) {
-          throw new Error(
-            "Error fetching playlists: " +
-              response.status +
-              " " +
-              response.statusText
-          );
-        }
-
-        const data = await response.json();
-        console.log("Received JSON data:", data);
-
-        // Add this line to log the playlists found
-        console.log("Playlists found:", data.items);
-
-        playlist = data.items.find((item) => item.name === playlistName);
-
-        if (!playlist && data.next) {
-          offset += 50;
-          await new Promise((resolve) => setTimeout(resolve, API_DELAY / 2));
-        } else if (!playlist) {
-          // If playlist is still not found and there are no more results
-          playlist = await createPlaylist(accessToken, playlistName);
-          logToConsole("Playlist not found, creating a new one.");
-        } else {
-          break;
-        }
-      }
-
-      if (playlist) {
-        // Fetch and store the playlist tracks once
-        console.log("Found playlist:", playlist);
-        await getPlaylistTracks(accessToken, playlist.tracks.href);
-      }
-
-      return playlist;
-    } catch (error) {
-      console.error("Error searching playlist:", error);
-      progressIndicator.innerText = `An error occurred while searching for the playlist: ${error}`;
-      logToConsole("An error occurred while searching for the playlist");
-
-      throw error;
-    }
-  };
-
-  const createPlaylist = async (accessToken) => {
+  const createPlaylist = async () => {
     const createPlaylistUrl = "https://api.spotify.com/v1/me/playlists";
 
     const response = await Spicetify.CosmosAsync.post(
@@ -609,33 +486,13 @@ export async function createPlaylistAndAddTracks(
       JSON.stringify({
         name: "Random Tracks from All of Spotify",
         public: true,
-        description:
-          "Created with Spicetify Randomish Playlist Maker",
+        description: "Created with Spicetify Randomish Playlist Maker",
       })
     );
 
     const data = await response.json();
     return data;
   };
-
-  document.addEventListener("DOMContentLoaded", () => {
-    if (loginButton) {
-      loginButton.addEventListener("click", () => {
-        redirectToAuthorization();
-      });
-    } else {
-      console.error('Button with id "loginButton" not found.');
-    }
-  });
-
-  const button = document.getElementById("createPlaylistAndAddTracksButton");
-  if (button) {
-    button.addEventListener("click", createPlaylistAndAddTracks);
-  } else {
-    console.error(
-      'Button with id "createPlaylistAndAddTracksButton" not found.'
-    );
-  }
 
   //See which checkboxes are checked and update exclusions accordingly
   const compileExclusions = (filters) => {
@@ -668,7 +525,6 @@ export async function createPlaylistAndAddTracks(
 
   const logToConsole = (message) => {
     console.log(message); // Log to the browser console
-    consoleDiv.innerHTML += `<p>${message}</p>`;
   };
   const logAllQueriesAndTracks = () => {
     console.log("All Queries and Tracks:");
@@ -679,6 +535,7 @@ export async function createPlaylistAndAddTracks(
 
   //End of definitions
 
+  
   //Function execution begins here
 
   //Exit if number of songs desired is not within the allowed range
@@ -703,15 +560,10 @@ export async function createPlaylistAndAddTracks(
   progressIndicator.innerText = "Finding/creating playlist...";
 
   try {
-    const playlist = await searchPlaylist(
-      accessToken,
-      "Random Tracks from All of Spotify"
-    );
-    const playlistId = playlist
-      ? playlist.id
-      : (await createPlaylist(accessToken)).id;
+    const playlist = await createPlaylist();
+    const playlistId = playlist.id;
 
-    await addTracksToPlaylist(accessToken, playlistId, numberOfSongs);
+    await addTracksToPlaylist(playlistId, numberOfSongs);
   } catch (error) {
     console.error("An error occurred:", error);
 
