@@ -291,7 +291,6 @@ async function createPlaylistAndAddTracks(
         .join(" & ");
 
       const searchQuery = `q=${queryString}&type=track&limit=${randomLimit}&offset=${randomOffset}`;
-
       const searchUrl = `https://api.spotify.com/v1/search?${searchQuery}`;
 
       try {
@@ -299,16 +298,20 @@ async function createPlaylistAndAddTracks(
 
         const response = await Spicetify.CosmosAsync.get(searchUrl);
 
-        if (response.status === 429) {
-          console.error("Too Many Requests: Please try again later.");
-          progressIndicator.innerText = `Too Many Requests: Please try again later.`;
-          return; // Stop the function execution
-        }
-        if (!response.ok) {
+        if (!response.tracks) {
           throw new Error(`Invalid search query: ${response.statusText}`);
         }
+        if (response.status === 429) {
+          // May not be right syntax for getting status
+          console.error("Too Many Requests: Please try again later.");
+          progressIndicator.innerText = `Too Many Requests: Please try again later.`;
+          Spicetify.showNotification(
+            "Too Many Requests: Please try again later."
+          );
+          return; // Stop the function execution
+        }
 
-        const data = await response.json();
+        const data = response;
         const tracks = data.tracks.items;
 
         if (tracks.length > 0) {
@@ -410,43 +413,14 @@ async function createPlaylistAndAddTracks(
     };
     const addBatchToPlaylist = async (playlistUrl, trackBatch) => {
       progressIndicator.innerText = `Adding tracks to playlist...`;
-      try {
-        let retryCount = 0;
-        const maxRetries = 3; // Replace with the desired maximum number of retries
 
-        while (retryCount < maxRetries) {
-          const addResponse = await Spicetify.CosmosAsync.post(
-            playlistUrl,
-            JSON.stringify({
-              uris: trackBatch,
-            })
-          );
-
-          if (addResponse.ok) {
-            console.log(
-              `${trackBatch.length} tracks added to the playlist successfully`
-            );
-            return; // Exit the function if successful
-          } else {
-            const errorMessage = `Error adding batch to the playlist: ${addResponse.statusText}`;
-            console.error(errorMessage);
-
-            // Increment the retry count and introduce a delay before the next retry
-            retryCount++;
-            await new Promise((resolve) => setTimeout(resolve, API_DELAY * 2));
-          }
-        }
-
-        console.error(
-          `Max retries exceeded. Failed to add batch to the playlist`
-        );
-        // Run an alert or handle the failure case if maximum retries exceeded
-      } catch (error) {
-        const errorMessage = `Error adding batch to the playlist: ${error.message}`;
-        console.error(errorMessage);
-        // Run an alert or handle the failure case if an error occurs
-      }
+      const addResponse = await Spicetify.CosmosAsync.post(playlistUrl, {
+        uris: trackBatch,
+      });
+      console.log(addResponse);
+      return;
     };
+
     logToConsole("Adding songs");
     const playlistUrl = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
     while (addedSongs.length < numberOfSongs) {
@@ -460,10 +434,7 @@ async function createPlaylistAndAddTracks(
         // Continue searching until a valid track is found
         while (!trackUri) {
           const randomYear = getRandomYear();
-          trackUri = await searchTrackAndAddToPlaylist(
-            accessToken,
-            playlistUrl
-          );
+          trackUri = await searchTrackAndAddToPlaylist(playlistUrl);
         }
 
         trackBatch.push(trackUri);
@@ -471,9 +442,6 @@ async function createPlaylistAndAddTracks(
 
       // Batch addition of tracks to the playlist
       await addBatchToPlaylist(playlistUrl, trackBatch);
-
-      // Introduce a delay between batches to avoid rate limits
-      await new Promise((resolve) => setTimeout(resolve, API_DELAY));
     }
   };
 
@@ -489,7 +457,7 @@ async function createPlaylistAndAddTracks(
       })
     );
 
-    const data = await response.json();
+    const data = response;
     return data;
   };
 
@@ -546,18 +514,20 @@ async function createPlaylistAndAddTracks(
     return;
   }
 
-
   compileExclusions(filters);
 
   songsFound = 0;
   const progressIndicator = document.getElementById("progress-indicator");
-  progressIndicator.innerText = "Finding/creating playlist...";
+  progressIndicator.innerText = "Creating playlist...";
 
   try {
     const playlist = await createPlaylist();
+
     const playlistId = playlist.id;
 
     await addTracksToPlaylist(playlistId, numberOfSongs);
+    // Success: Reset HTML elements
+    document.getElementById("progress-indicator").innerText = "Done!";
   } catch (error) {
     console.error("An error occurred:", error);
 
