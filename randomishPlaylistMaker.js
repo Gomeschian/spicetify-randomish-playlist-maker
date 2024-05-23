@@ -546,10 +546,6 @@ async function createPlaylistAndAddTracks(
     return;
   }
 
-  //clear existing track tracking arrays
-  existingPlaylistTracks.splice(0, existingPlaylistTracks.length);
-  addedDuringRuntime.splice(0, addedDuringRuntime.length);
-  addedSongs.splice(0, addedSongs.length);
 
   compileExclusions(filters);
 
