@@ -64,6 +64,7 @@
     setTimeout(randomishPlaylistMaker, 300);
     return;
   }
+  // Icon - 'Dice Game Icon' from https://uxwing.com/dice-game-icon/
   const CONVERT_ICON = `
   <?xml version="1.0" encoding="utf-8"?>
   <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24" xml:space="preserve" width="24" height="24">
