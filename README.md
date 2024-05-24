@@ -15,7 +15,7 @@ Icon used is "Dice Game Icon" from UXWing: https://uxwing.com/dice-game-icon/
 3. Open a terminal and run: spicetify config extensions randomishPlaylistMaker.js
 4. Run: spicetify apply
 
-# Updating
+## Updating
 
 1. Download new version of randomishPlaylistMaker.js and replace old version in Spicetify's extensions folder (e.g. C:\Users\your-username\AppData\Local\spicetify\Extensions)
 2. Open a terminal and run: spicetify apply
