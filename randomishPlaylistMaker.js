@@ -146,6 +146,7 @@ const DEFAULT_SONGS_TO_ADD = 25;
 const BATCH_SIZE = 100; // 100 is the max songs that can be added at once per Spotify's Web API
 const EARLIEST_RELEASE_YEAR = 1860; // Year of oldest playable music recording known
 const API_DELAY = 200; // Set to e.g. 200 if need delay for API rate limiting
+const MAX_FAILED_SEARCH_REQUESTS = 5; // Give up if track search gets too many invalid responses
 
 const DEFAULT_FILTERS = {
   audiobooksCheckbox: true, // Exclude audiobook chapters (note that audiobooks not formatted as music tracks are excluded regardless by nature) - ON by default
@@ -175,6 +176,7 @@ async function createPlaylistAndAddTracks(
   let allQueriesAndTracks = [];
   const trackTitleStringsToExclude = [];
   let songsFound = 0;
+  let failedSearchRequests = 0;
 
   const getRandomYear = () => {
     const currentYear = new Date().getFullYear();
@@ -328,118 +330,113 @@ async function createPlaylistAndAddTracks(
       const searchQuery = `q=${queryString}&type=track&limit=${randomLimit}&offset=${randomOffset}`;
       const searchUrl = `https://api.spotify.com/v1/search?${searchQuery}`;
 
-      try {
-        await new Promise((resolve) => setTimeout(resolve, API_DELAY));
+      await new Promise((resolve) => setTimeout(resolve, API_DELAY));
 
-        const response = await Spicetify.CosmosAsync.get(searchUrl);
+      const response = await Spicetify.CosmosAsync.get(searchUrl);
 
-        if (!response.tracks) {
-          console.log("invalid response:", response);
+      if (!response.tracks) {
+        console.log("invalid response:", response);
+        failedSearchRequests++;
+        if (failedSearchRequests >= MAX_FAILED_SEARCH_REQUESTS) {
           Spicetify.showNotification("Something went wrong. Try again later.");
           throw new Error(`Something went wrong. Try again later.`);
         }
+        return;
+      }
 
-        const data = response;
-        console.log("valid data:", data);
-        const tracks = data.tracks.items;
+      console.log("valid response:", response);
 
-        if (tracks.length > 0) {
-          const randomIndex = Math.floor(Math.random() * tracks.length);
+      const data = response;
+      const tracks = data.tracks.items;
 
-          const track = tracks[randomIndex];
-          const trackUri = track.uri;
-          const trackName = track.name;
-          const trackAlbum = track.album.name;
-          const trackArtist = track.artists[0].name;
+      if (tracks.length > 0) {
+        const randomIndex = Math.floor(Math.random() * tracks.length);
 
-          // Log details of the query and the track
-          const queryDetails = {
-            query: searchQuery,
-            track: track,
-          };
-          allQueriesAndTracks.push(queryDetails);
+        const track = tracks[randomIndex];
+        const trackUri = track.uri;
+        const trackName = track.name;
+        const trackAlbum = track.album.name;
+        const trackArtist = track.artists[0].name;
 
-          // Check if the track should be excluded using regular expressions
-          const isExcluded = trackTitleStringsToExclude.some((titleRegex) =>
-            titleRegex.test(trackName)
-          );
+        // Log details of the query and the track
+        const queryDetails = {
+          query: searchQuery,
+          track: track,
+        };
+        allQueriesAndTracks.push(queryDetails);
 
-          if (isExcluded) {
-            logToConsole(
-              `Track excluded for search: ${searchQuery}. Skipping.`
-            );
-            return null;
-          }
+        // Check if the track should be excluded using regular expressions
+        const isExcluded = trackTitleStringsToExclude.some((titleRegex) =>
+          titleRegex.test(trackName)
+        );
 
-          // Check if the track has already been added during runtime by URI
-          const addedDuringRuntimeURIs = addedDuringRuntime.map(
-            (track) => track.uri
-          );
-
-          if (addedDuringRuntimeURIs.includes(trackUri)) {
-            logToConsole(
-              `Duplicate track found for search: ${searchQuery}. Skipping.`
-            );
-
-            return null;
-          }
-
-          //Check if the track has already been added during runtime by name, album, and artist
-          const addedDuringRuntimeNames = addedDuringRuntime.map(
-            (track) => track.name
-          );
-          const addedDuringRuntimeAlbums = addedDuringRuntime.map(
-            (track) => track.album
-          );
-          const addedDuringRuntimeArtists = addedDuringRuntime.map(
-            (track) => track.artist.split(", ")[0]
-          );
-
-          //Normalize added during runtime fields arrays to lowercase, trimmed
-          addedDuringRuntimeNames.map((name) => name.toLowerCase().trim());
-          addedDuringRuntimeAlbums.map((album) => album.toLowerCase().trim());
-          addedDuringRuntimeArtists.map((artist) =>
-            artist.toLowerCase().trim()
-          );
-
-          if (
-            addedDuringRuntimeNames.includes(trackName.toLowerCase().trim()) &&
-            addedDuringRuntimeAlbums.includes(
-              trackAlbum.toLowerCase().trim()
-            ) &&
-            addedDuringRuntimeArtists.includes(trackArtist.toLowerCase().trim())
-          ) {
-            logToConsole(
-              `Duplicate track found for search: ${searchQuery}. Skipping.`
-            );
-            return null;
-          }
-
-          //Push the track to addedSongs array
-
-          addedSongs.push({
-            year: track.album.release_date.slice(0, 4),
-            album: track.album.name,
-            name: track.name,
-            artist: track.artists.map((artist) => artist.name).join(", "),
-            uri: trackUri,
-          });
-
-          addedDuringRuntime.push(...addedSongs);
-          songsFound++;
-
-          updateProgressIndicator(songsFound, numberOfSongs);
-          return trackUri;
-        } else {
-          const errorMessage = `No track found for search: ${searchQuery}`;
-          console.error(errorMessage);
+        if (isExcluded) {
+          logToConsole(`Track excluded for search: ${searchQuery}. Skipping.`);
           return null;
         }
-      } catch (error) {
-        const errorMessage = `Error searching for track: ${error.message}`;
+
+        // Check if the track has already been added during runtime by URI
+        const addedDuringRuntimeURIs = addedDuringRuntime.map(
+          (track) => track.uri
+        );
+
+        if (addedDuringRuntimeURIs.includes(trackUri)) {
+          logToConsole(
+            `Duplicate track found for search: ${searchQuery}. Skipping.`
+          );
+
+          return null;
+        }
+
+        //Check if the track has already been added during runtime by name, album, and artist
+        const addedDuringRuntimeNames = addedDuringRuntime.map(
+          (track) => track.name
+        );
+        const addedDuringRuntimeAlbums = addedDuringRuntime.map(
+          (track) => track.album
+        );
+        const addedDuringRuntimeArtists = addedDuringRuntime.map(
+          (track) => track.artist.split(", ")[0]
+        );
+
+        //Normalize added during runtime fields arrays to lowercase, trimmed
+        addedDuringRuntimeNames.map((name) => name.toLowerCase().trim());
+        addedDuringRuntimeAlbums.map((album) => album.toLowerCase().trim());
+        addedDuringRuntimeArtists.map((artist) => artist.toLowerCase().trim());
+
+        if (
+          addedDuringRuntimeNames.includes(trackName.toLowerCase().trim()) &&
+          addedDuringRuntimeAlbums.includes(trackAlbum.toLowerCase().trim()) &&
+          addedDuringRuntimeArtists.includes(trackArtist.toLowerCase().trim())
+        ) {
+          logToConsole(
+            `Duplicate track found for search: ${searchQuery}. Skipping.`
+          );
+          return null;
+        }
+
+        //Push the track to addedSongs array
+
+        addedSongs.push({
+          year: track.album.release_date.slice(0, 4),
+          album: track.album.name,
+          name: track.name,
+          artist: track.artists.map((artist) => artist.name).join(", "),
+          uri: trackUri,
+        });
+
+        addedDuringRuntime.push(...addedSongs);
+        songsFound++;
+
+        updateProgressIndicator(songsFound, numberOfSongs);
+        return trackUri;
+      } else {
+        const errorMessage = `No track found for search: ${searchQuery}`;
         console.error(errorMessage);
+        return null;
       }
     };
+
     const addBatchToPlaylist = async (playlistUrl, trackBatch) => {
       progressIndicator.innerText = `Adding tracks to playlist...`;
 
@@ -532,7 +529,6 @@ async function createPlaylistAndAddTracks(
   //End of definitions
 
   //FUNCTION EXECUTION BEGINS HERE
-  
 
   //Exit if number of songs desired is not within the allowed range
   if (
@@ -545,7 +541,7 @@ async function createPlaylistAndAddTracks(
   }
 
   compileExclusions(filters);
-
+  failedSearchRequests = 0;
   songsFound = 0;
   const progressIndicator = document.getElementById("progress-indicator");
   progressIndicator.innerText = "Creating playlist...";
