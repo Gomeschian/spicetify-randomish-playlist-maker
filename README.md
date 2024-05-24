@@ -62,7 +62,7 @@ There are optional filters to adjust the kind of results found (see track title 
 
 ## Guidelines/Troubleshooting
 
-Check the console for progress details - press ctrl+shift+i. The first time, you need to open a terminal and run: spicetify enable dev-tools
+Check the console for progress details - press ctrl+shift+i to open it after opening a terminal and running: spicetify enable dev-tools
 
 As noted above, up to 100 songs are searched and added at a time before doing another batch, so the process may partially succeed if interrupted.
 
