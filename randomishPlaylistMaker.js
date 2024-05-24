@@ -334,9 +334,10 @@ async function createPlaylistAndAddTracks(
         const response = await Spicetify.CosmosAsync.get(searchUrl);
 
         if (!response.tracks) {
-          throw new Error(`Invalid search query: ${response.error.message}`);
+          throw new Error(`Invalid search query: ${response.statusText}`);
         }
-        if (response.error.status === 429) {
+        if (response.status === 429) {
+          // May not be right syntax for getting status
           console.error("Too Many Requests: Please try again later.");
           progressIndicator.innerText = `Too Many Requests: Please try again later.`;
           Spicetify.showNotification(
@@ -490,13 +491,6 @@ async function createPlaylistAndAddTracks(
         description: "Created with Spicetify Randomish Playlist Maker",
       })
     );
-
-    if (response.error.status === 429) {
-      console.error("Too Many Requests: Please try again later.");
-      progressIndicator.innerText = `Too Many Requests: Please try again later.`;
-      Spicetify.showNotification("Too Many Requests: Please try again later.");
-      return; // Stop the function execution
-    }
 
     const data = response;
     return data;
