@@ -549,6 +549,8 @@ async function createPlaylistAndAddTracks(
   }
 }
 
+//Exclusions and character sets
+
 const bookTitles = [
   "Chapter \\d+", // English
   "Chapitre \\d+", // French
