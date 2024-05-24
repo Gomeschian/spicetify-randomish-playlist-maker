@@ -19,11 +19,12 @@ Icon used is "Dice Game Icon" from UXWing: https://uxwing.com/dice-game-icon/
 
 1. Download new version of randomishPlaylistMaker.js and replace old version in Spicetify's extensions folder (e.g. C:\Users\your-username\AppData\Local\spicetify\Extensions)
 2. Open a terminal and run: spicetify apply
-   
+
 ## Uninstallation
 
 1. Open a terminal and run: spicetify extensions randomishPlaylistMaker.js-
 2. Run: spicetify apply
+3. Delete randomishPlaylistMaker.js from Spicetify's extensions folder (e.g. C:\Users\your-username\AppData\Local\spicetify\Extensions) - note even if you don't remove the file, the extension will no longer appear in Spicetify after Step 2
 
 ## Usage
 
