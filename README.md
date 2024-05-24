@@ -1,10 +1,12 @@
 # Spicetify Randomish Playlist Maker
 
-## Overview
+## Overview & Acknowledgments
 
 Creates an eclectic Spotify playlist called "Randomish Tracks from All of Spotify" by trying random-ish search queries per the Spotify Web API's search endpoint ([Spotify API Search Documentation](https://developer.spotify.com/documentation/web-api/reference/search)).
 
 Stripped down from the web app version at https://github.com/Gomeschian/spotify-random-playlist-maker, and adapted for Spicetify by using portions of phraseToPlaylist by CharlieS1103 and MalTeeez at https://github.com/CharlieS1103/spicetify-extensions as a template (enormous thanks).
+
+Icon used is "Dice Game Icon" from UXWing: https://uxwing.com/dice-game-icon/
 
 ## Installation
 
@@ -13,6 +15,11 @@ Stripped down from the web app version at https://github.com/Gomeschian/spotify-
 3. Open a terminal and run: spicetify config extensions randomishPlaylistMaker.js
 4. Run: spicetify apply
 
+## Updating
+
+1. Download new version of randomishPlaylistMaker.js and replace old version in Spicetify's extensions folder (e.g. C:\Users\your-username\AppData\Local\spicetify\Extensions)
+2. Open a terminal and run: spicetify apply
+   
 ## Uninstallation
 
 1. Open a terminal and run: spicetify extensions randomishPlaylistMaker.js-
@@ -45,9 +52,9 @@ These are very arbitrary numbers that can conceivably be improved.
 
 Searches will find anything Spotify considers a track, so possibly noise or spoken word in addition to songs. Podcast episodes and audiobooks as such won't be found, but tracks from audiobooks formatted as albums will.
 
-There are optional filters to adjust the kind of results found (see track title exclusions at the end of the file), but none are absolute and other tracks may marginally be affected. Two are enabled by default - you can change the configuration by editing the values in DEFAULT_FILTERS to true or false in the code:
+There are optional filters to adjust the kind of results found (see track title exclusions at the end of the file), but none are absolute and other tracks may marginally be affected. Two are enabled by ult - you can change the configuration by editing the values in ULT_FILTERS to true or false in the code (after making changes be sure to run: spicetify apply):
 
-- Fewer Audiobook Chapters (Default/Recommended): Excludes tracks with titles like "Chapter 1" or "Chapter some-number" in a number of different languages. Could exclude song titles but only if they contain "Chapter" followed immediately by a number.
+- Fewer Audiobook Chapters (ult/Recommended): Excludes tracks with titles like "Chapter 1" or "Chapter some-number" in a number of different languages. Could exclude song titles but only if they contain "Chapter" followed immediately by a number.
 - Fewer Birthday Song Variations (Default/Recommended): Excludes tracks with "Happy Birthday To so-and-so" in their titles. In testing, recordings of the Birthday Song in different styles and with different people's names seem to come up unusually often.
 - Less Classical: Excludes tracks with "Opus" or some variation in their titles. The exclusion list contains a few other catalog systems for specific composers, but they're commented out by default.
 - Fewer pre-2000 releases: when searching by year, the range of random years for the query will be restricted to the 21st Century until today (songs released earlier can still be added to the playlist from queries that don't include a year field).
@@ -67,7 +74,7 @@ If an API limit is hit during running then fewer songs than requested may actual
 - "Random" means Javascript's `Math.random()`.
 - The Spotify for Developers landing page at the time of writing says Spotify has 100 million songs (https://developer.spotify.com/) and at most a search can return 50,000 (50,050?) results per query...
 - There seems to be some degree of bias toward the user's account/listening profile, which would be due to Spotify's handling of search queries but could potentially be mitigated further.
-- Conjecturally, MAYBE, later results/offsets of searches may be irrelevant to the query and default to Spotify recommendations based on the user...like what you get when you make a brand new playlist and Spotify recommends tracks to add.
+- Conjecturally, MAYBE, later results/offsets of searches may be irrelevant to the query and ult to Spotify recommendations based on the user...like what you get when you make a brand new playlist and Spotify recommends tracks to add.
 - Adding additional search fields like album or ISRC may or may not improve the quality of results. Year seems the most reliable. Possibly different combinations of two or at most three fields would be good.
 - When selecting random characters for the search query fields, it might be better to select the possible range(s) for ALL fields to be used in the particular query, instead of doing a different selection for each. Unclear if mixing and matching e.g., Kanji artist and Georgian track name will produce relevant results.
 
