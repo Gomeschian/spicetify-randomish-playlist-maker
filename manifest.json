@@ -1,0 +1,10 @@
+[
+  {
+    "name": "spicetify-randomish-playlist-maker",
+    "description": "Creates a playlist with random-ish tracks from all of Spotify",
+    "preview": "sample1.png",
+    "main": "randomishPlaylistMaker.js",
+    "readme": "README.md",
+    "tags": ["random"]
+  }
+]
