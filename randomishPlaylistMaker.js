@@ -102,6 +102,7 @@ function extensionInterface() {
     value='25'
     min='1'
     max='100'
+    style="color: black; background-color: white;"
   />
   <br />
   <br />
