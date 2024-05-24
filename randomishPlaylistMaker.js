@@ -334,19 +334,13 @@ async function createPlaylistAndAddTracks(
         const response = await Spicetify.CosmosAsync.get(searchUrl);
 
         if (!response.tracks) {
-          throw new Error(`Invalid search query: ${response.statusText}`);
-        }
-        if (response.status === 429) {
-          // May not be right syntax for getting status
-          console.error("Too Many Requests: Please try again later.");
-          progressIndicator.innerText = `Too Many Requests: Please try again later.`;
-          Spicetify.showNotification(
-            "Too Many Requests: Please try again later."
-          );
-          return; // Stop the function execution
+          console.log("invalid response:", response);
+          Spicetify.showNotification("Something went wrong. Try again later.");
+          throw new Error(`Something went wrong. Try again later.`);
         }
 
         const data = response;
+        console.log("valid data:", data);
         const tracks = data.tracks.items;
 
         if (tracks.length > 0) {
@@ -538,6 +532,7 @@ async function createPlaylistAndAddTracks(
   //End of definitions
 
   //FUNCTION EXECUTION BEGINS HERE
+  
 
   //Exit if number of songs desired is not within the allowed range
   if (
