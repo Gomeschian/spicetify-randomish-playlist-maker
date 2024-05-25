@@ -8,6 +8,9 @@ Stripped down from the web app version at https://github.com/Gomeschian/spotify-
 
 Icon used is "Dice Game Icon" from UXWing: https://uxwing.com/dice-game-icon/
 
+![sample](/sample1.png)
+![sample](/sample2.png)
+
 ## Installation
 
 1. Install Spicetify
@@ -78,6 +81,3 @@ If an API limit is hit during running then fewer songs than requested may actual
 - Conjecturally, MAYBE, later results/offsets of searches may be irrelevant to the query and default to Spotify recommendations based on the user...like what you get when you make a brand new playlist and Spotify recommends tracks to add.
 - Adding additional search fields like album or ISRC may or may not improve the quality of results. Year seems the most reliable. Possibly different combinations of two or at most three fields would be good.
 - When selecting random characters for the search query fields, it might be better to select the possible range(s) for ALL fields to be used in the particular query, instead of doing a different selection for each. Unclear if mixing and matching e.g., Kanji artist and Georgian track name will produce relevant results.
-
-![sample](/sample1.png)
-![sample](/sample2.png)
