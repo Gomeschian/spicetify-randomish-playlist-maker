@@ -176,6 +176,7 @@
     const trackTitleStringsToExclude = [];
     let songsFound = 0;
     let failedSearchRequests = 0;
+    const badQueries = [];
 
     // For analytics
     let apiCalls = 0;
@@ -455,6 +456,7 @@
         } else {
           const errorMessage = `No track found for search: ${searchQuery}`;
           console.error(errorMessage);
+          badQueries.push(searchQuery);
           await new Promise((resolve) => setTimeout(resolve, API_DELAY)); // Additional cooldown after a search with no results
           return null;
         }
@@ -589,13 +591,16 @@
       document.getElementById("progress-indicator").innerText =
         "Error occurred. Please try again.";
     } finally {
-      // Log API call analytics
+      // Log analytics
       endTime = Date.now();
       elapsedTimeInSeconds = (endTime - startTime) / 1000;
       apiCallsPerSecond = apiCalls / elapsedTimeInSeconds;
       apiCallsPerMinute = apiCallsPerSecond * 60;
       apiCallsPerThirtySeconds = apiCallsPerSecond * 30;
+      console.log(`Bad queries (${badQueries.length}): `, badQueries);
+      console.log("Total search requests:", allQueriesAndTracks.length);
       console.log("Time elapsed:", elapsedTimeInSeconds, "seconds");
+      console.log("Total API calls:", apiCalls);
       console.log("API calls per second:", apiCallsPerSecond);
       console.log("API calls per minute:", apiCallsPerMinute);
       console.log("API calls per 30 seconds:", apiCallsPerThirtySeconds);
