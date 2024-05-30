@@ -629,93 +629,93 @@
 
   //Unicode ranges (selected) per https://www.ssec.wisc.edu/~tomw/java/unicode.html
   const ranges = [
-    { min: 33, max: 126 }, //  Basic Latin
-    { min: 161, max: 255 }, //  Latin-1 Supplement
-    { min: 256, max: 383 }, //  Latin Extended-A
-    { min: 384, max: 591 }, //  Latin Extended-B
-    { min: 592, max: 687 }, //  IPA Extensions
-    { min: 688, max: 767 }, //  Spacing Modifier Letters
-    { min: 768, max: 879 }, //  Combining Diacritical Marks
-    { min: 880, max: 1023 }, //  Greek
-    { min: 1024, max: 1279 }, //  Cyrillic
-    { min: 1328, max: 1423 }, //  Armenian
-    { min: 1424, max: 1535 }, //  Hebrew
-    { min: 1536, max: 1791 }, //  Arabic
-    { min: 1792, max: 1871 }, //  Syriac
-    { min: 1920, max: 1983 }, //  Thaana
-    { min: 2304, max: 2431 }, //  Devanagari
-    { min: 2432, max: 2559 }, //  Bengali
-    { min: 2560, max: 2687 }, //  Gurmukhi
-    { min: 2688, max: 2815 }, //  Gujarati
-    { min: 2816, max: 2943 }, //  Oriya
-    { min: 2944, max: 3071 }, //  Tamil
-    { min: 3072, max: 3199 }, //  Telugu
-    { min: 3200, max: 3327 }, //  Kannada
-    { min: 3328, max: 3455 }, //  Malayalam
-    { min: 3456, max: 3583 }, //  Sinhala
-    { min: 3584, max: 3711 }, //  Thai
-    { min: 3712, max: 3839 }, //  Lao
-    { min: 3840, max: 4095 }, //  Tibetan
-    { min: 4096, max: 4255 }, //  Myanmar
-    { min: 4256, max: 4351 }, //  Georgian
-    { min: 4352, max: 4607 }, //  Hangul Jamo
-    { min: 4608, max: 4991 }, //  Ethiopic
-    { min: 5024, max: 5119 }, //  Cherokee
-    { min: 5120, max: 5759 }, //  Unified Canadian Aboriginal Syllabics
-    { min: 5760, max: 5791 }, //  Ogham
-    { min: 5792, max: 5887 }, //  Runic
-    { min: 6016, max: 6143 }, //  Khmer
-    { min: 6144, max: 6319 }, //  Mongolian
-    { min: 7680, max: 7935 }, //  Latin Extended Additional
-    { min: 7936, max: 8191 }, //  Greek Extended
-    { min: 8192, max: 8303 }, //  General Punctuation
-    { min: 8304, max: 8351 }, //  Superscripts and Subscripts
-    { min: 8352, max: 8399 }, //  Currency Symbols
-    { min: 8400, max: 8447 }, //  Combining Marks for Symbols
-    { min: 8448, max: 8527 }, //  Letterlike Symbols
-    { min: 8528, max: 8591 }, //  Number Forms
-    { min: 8592, max: 8703 }, //  Arrows
-    { min: 8704, max: 8959 }, //  Mathematical Operators
-    { min: 8960, max: 9215 }, //  Miscellaneous Technical
-    { min: 9216, max: 9279 }, //  Control Pictures
-    { min: 9280, max: 9311 }, //  Optical Character Recognition
-    { min: 9312, max: 9471 }, //  Enclosed Alphanumerics
-    { min: 9472, max: 9599 }, //  Box Drawing
-    { min: 9600, max: 9631 }, //  Block Elements
-    { min: 9632, max: 9727 }, //  Geometric Shapes
-    { min: 9728, max: 9983 }, //  Miscellaneous Symbols
-    { min: 9984, max: 10175 }, //  Dingbats
-    { min: 10240, max: 10495 }, //  Braille Patterns
-    { min: 11904, max: 12031 }, //  CJK Radicals Supplement
-    { min: 12032, max: 12255 }, //  Kangxi Radicals
-    { min: 12272, max: 12287 }, //  Ideographic Description Characters
-    { min: 12288, max: 12351 }, //  CJK Symbols and Punctuation
-    { min: 12352, max: 12447 }, //  Hiragana
-    { min: 12448, max: 12543 }, //  Katakana
-    { min: 12544, max: 12591 }, //  Bopomofo
-    { min: 12592, max: 12687 }, //  Hangul Compatibility Jamo
-    { min: 12688, max: 12703 }, //  Kanbun
-    { min: 12704, max: 12735 }, //  Bopomofo Extended
-    { min: 12800, max: 13055 }, //  Enclosed CJK Letters and Months
-    { min: 13056, max: 13311 }, //  CJK Compatibility
-    { min: 13312, max: 19893 }, //  CJK Unified Ideographs Extension A
-    { min: 19968, max: 40959 }, //  CJK Unified Ideographs
-    { min: 40960, max: 42127 }, //  Yi Syllables
-    { min: 42128, max: 42191 }, //  Yi Radicals
-    { min: 44032, max: 55203 }, //  Hangul Syllables
-    { min: 55296, max: 56191 }, //  High Surrogates
-    { min: 56192, max: 56319 }, //  High Private Use Surrogates
-    { min: 56320, max: 57343 }, //  Low Surrogates
-    { min: 57344, max: 63743 }, //  Private Use
-    { min: 63744, max: 64255 }, //  CJK Compatibility Ideographs
-    { min: 64256, max: 64335 }, //  Alphabetic Presentation Forms
-    { min: 64336, max: 65023 }, //  Arabic Presentation Forms-A
-    { min: 65056, max: 65071 }, //  Combining Half Marks
-    { min: 65072, max: 65103 }, //  CJK Compatibility Forms
-    { min: 65104, max: 65135 }, //  Small Form Variants
-    { min: 65136, max: 65278 }, //  Arabic Presentation Forms-B
-    { min: 65279, max: 65279 }, //  Specials
-    { min: 65280, max: 65519 }, //  Halfwidth and Fullwidth Forms
-    { min: 65520, max: 65533 }, //  Specials
+    { set: "Basic Latin", min: 33, max: 126 }, // Basic Latin
+    { set: "Latin-1 Supplement", min: 161, max: 255 }, // Latin-1 Supplement
+    { set: "Latin Extended-A", min: 256, max: 383 }, // Latin Extended-A
+    { set: "Latin Extended-B", min: 384, max: 591 }, // Latin Extended-B
+    { set: "IPA Extensions", min: 592, max: 687 }, // IPA Extensions
+    { set: "Spacing Modifier Letters", min: 688, max: 767 }, // Spacing Modifier Letters
+    { set: "Combining Diacritical Marks", min: 768, max: 879 }, // Combining Diacritical Marks
+    { set: "Greek", min: 880, max: 1023 }, // Greek
+    { set: "Cyrillic", min: 1024, max: 1279 }, // Cyrillic
+    { set: "Armenian", min: 1328, max: 1423 }, // Armenian
+    { set: "Hebrew", min: 1424, max: 1535 }, // Hebrew
+    { set: "Arabic", min: 1536, max: 1791 }, // Arabic
+    { set: "Syriac", min: 1792, max: 1871 }, // Syriac
+    { set: "Thaana", min: 1920, max: 1983 }, // Thaana
+    { set: "Devanagari", min: 2304, max: 2431 }, // Devanagari
+    { set: "Bengali", min: 2432, max: 2559 }, // Bengali
+    { set: "Gurmukhi", min: 2560, max: 2687 }, // Gurmukhi
+    { set: "Gujarati", min: 2688, max: 2815 }, // Gujarati
+    { set: "Oriya", min: 2816, max: 2943 }, // Oriya
+    { set: "Tamil", min: 2944, max: 3071 }, // Tamil
+    { set: "Telugu", min: 3072, max: 3199 }, // Telugu
+    { set: "Kannada", min: 3200, max: 3327 }, // Kannada
+    { set: "Malayalam", min: 3328, max: 3455 }, // Malayalam
+    { set: "Sinhala", min: 3456, max: 3583 }, // Sinhala
+    { set: "Thai", min: 3584, max: 3711 }, // Thai
+    { set: "Lao", min: 3712, max: 3839 }, // Lao
+    { set: "Tibetan", min: 3840, max: 4095 }, // Tibetan
+    { set: "Myanmar", min: 4096, max: 4255 }, // Myanmar
+    { set: "Georgian", min: 4256, max: 4351 }, // Georgian
+    { set: "Hangul Jamo", min: 4352, max: 4607 }, // Hangul Jamo
+    { set: "Ethiopic", min: 4608, max: 4991 }, // Ethiopic
+    { set: "Cherokee", min: 5024, max: 5119 }, // Cherokee
+    { set: "Unified Canadian Aboriginal Syllabics", min: 5120, max: 5759 }, // Unified Canadian Aboriginal Syllabics
+    { set: "Ogham", min: 5760, max: 5791 }, // Ogham
+    { set: "Runic", min: 5792, max: 5887 }, // Runic
+    { set: "Khmer", min: 6016, max: 6143 }, // Khmer
+    { set: "Mongolian", min: 6144, max: 6319 }, // Mongolian
+    { set: "Latin Extended Additional", min: 7680, max: 7935 }, // Latin Extended Additional
+    { set: "Greek Extended", min: 7936, max: 8191 }, // Greek Extended
+    { set: "General Punctuation", min: 8192, max: 8303 }, // General Punctuation
+    { set: "Superscripts and Subscripts", min: 8304, max: 8351 }, // Superscripts and Subscripts
+    { set: "Currency Symbols", min: 8352, max: 8399 }, // Currency Symbols
+    { set: "Combining Marks for Symbols", min: 8400, max: 8447 }, // Combining Marks for Symbols
+    { set: "Letterlike Symbols", min: 8448, max: 8527 }, // Letterlike Symbols
+    { set: "Number Forms", min: 8528, max: 8591 }, // Number Forms
+    { set: "Arrows", min: 8592, max: 8703 }, // Arrows
+    { set: "Mathematical Operators", min: 8704, max: 8959 }, // Mathematical Operators
+    { set: "Miscellaneous Technical", min: 8960, max: 9215 }, // Miscellaneous Technical
+    { set: "Control Pictures", min: 9216, max: 9279 }, // Control Pictures
+    { set: "Optical Character Recognition", min: 9280, max: 9311 }, // Optical Character Recognition
+    { set: "Enclosed Alphanumerics", min: 9312, max: 9471 }, // Enclosed Alphanumerics
+    { set: "Box Drawing", min: 9472, max: 9599 }, // Box Drawing
+    { set: "Block Elements", min: 9600, max: 9631 }, // Block Elements
+    { set: "Geometric Shapes", min: 9632, max: 9727 }, // Geometric Shapes
+    { set: "Miscellaneous Symbols", min: 9728, max: 9983 }, // Miscellaneous Symbols
+    { set: "Dingbats", min: 9984, max: 10175 }, // Dingbats
+    { set: "Braille Patterns", min: 10240, max: 10495 }, // Braille Patterns
+    { set: "CJK Radicals Supplement", min: 11904, max: 12031 }, // CJK Radicals Supplement
+    { set: "Kangxi Radicals", min: 12032, max: 12255 }, // Kangxi Radicals
+    { set: "Ideographic Description Characters", min: 12272, max: 12287 }, // Ideographic Description Characters
+    { set: "CJK Symbols and Punctuation", min: 12288, max: 12351 }, // CJK Symbols and Punctuation
+    { set: "Hiragana", min: 12352, max: 12447 }, // Hiragana
+    { set: "Katakana", min: 12448, max: 12543 }, // Katakana
+    { set: "Bopomofo", min: 12544, max: 12591 }, // Bopomofo
+    { set: "Hangul Compatibility Jamo", min: 12592, max: 12687 }, // Hangul Compatibility Jamo
+    { set: "Kanbun", min: 12688, max: 12703 }, // Kanbun
+    { set: "Bopomofo Extended", min: 12704, max: 12735 }, // Bopomofo Extended
+    { set: "Enclosed CJK Letters and Months", min: 12800, max: 13055 }, // Enclosed CJK Letters and Months
+    { set: "CJK Compatibility", min: 13056, max: 13311 }, // CJK Compatibility
+    { set: "CJK Unified Ideographs Extension A", min: 13312, max: 19893 }, // CJK Unified Ideographs Extension A
+    { set: "CJK Unified Ideographs", min: 19968, max: 40959 }, // CJK Unified Ideographs
+    { set: "Yi Syllables", min: 40960, max: 42127 }, // Yi Syllables
+    { set: "Yi Radicals", min: 42128, max: 42191 }, // Yi Radicals
+    { set: "Hangul Syllables", min: 44032, max: 55203 }, // Hangul Syllables
+    { set: "High Surrogates", min: 55296, max: 56191 }, // High Surrogates
+    { set: "High Private Use Surrogates", min: 56192, max: 56319 }, // High Private Use Surrogates
+    { set: "Low Surrogates", min: 56320, max: 57343 }, // Low Surrogates
+    { set: "Private Use", min: 57344, max: 63743 }, // Private Use
+    { set: "CJK Compatibility Ideographs", min: 63744, max: 64255 }, // CJK Compatibility Ideographs
+    { set: "Alphabetic Presentation Forms", min: 64256, max: 64335 }, // Alphabetic Presentation Forms
+    { set: "Arabic Presentation Forms-A", min: 64336, max: 65023 }, // Arabic Presentation Forms-A
+    { set: "Combining Half Marks", min: 65056, max: 65071 }, // Combining Half Marks
+    { set: "CJK Compatibility Forms", min: 65072, max: 65103 }, // CJK Compatibility Forms
+    { set: "Small Form Variants", min: 65104, max: 65135 }, // Small Form Variants
+    { set: "Arabic Presentation Forms-B", min: 65136, max: 65278 }, // Arabic Presentation Forms-B
+    { set: "Specials", min: 65279, max: 65279 }, // Specials
+    { set: "Halfwidth and Fullwidth Forms", min: 65280, max: 65519 }, // Halfwidth and Fullwidth Forms
+    { set: "Specials", min: 65520, max: 65533 }, // Specials
   ];
 })();
