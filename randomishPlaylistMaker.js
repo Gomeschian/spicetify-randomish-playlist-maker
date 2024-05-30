@@ -627,10 +627,10 @@
 
   const happyBirthdayTitles = ["Happy Birthday To"];
 
-  //Unicode ranges per https://www.ssec.wisc.edu/~tomw/java/unicode.html
+  //Unicode ranges (selected) per https://www.ssec.wisc.edu/~tomw/java/unicode.html
   const ranges = [
     { min: 33, max: 126 }, //  Basic Latin
-    { min: 128, max: 255 }, //  Latin-1 Supplement
+    { min: 161, max: 255 }, //  Latin-1 Supplement
     { min: 256, max: 383 }, //  Latin Extended-A
     { min: 384, max: 591 }, //  Latin Extended-B
     { min: 592, max: 687 }, //  IPA Extensions
