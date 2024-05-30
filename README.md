@@ -1,7 +1,5 @@
 # Spicetify Randomish Playlist Maker
 
-## Overview & Acknowledgments
-
 Creates an eclectic Spotify playlist called "Randomish Tracks from All of Spotify" by trying random-ish search queries per the Spotify Web API's search endpoint ([Spotify API Search Documentation](https://developer.spotify.com/documentation/web-api/reference/search)).
 
 Stripped down from the web app version at https://github.com/Gomeschian/spotify-random-playlist-maker, and adapted for Spicetify by using portions of phraseToPlaylist by CharlieS1103 and MalTeeez at https://github.com/CharlieS1103/spicetify-extensions as a template (enormous thanks).
