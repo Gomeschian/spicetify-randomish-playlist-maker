@@ -177,15 +177,6 @@
     let songsFound = 0;
     let failedSearchRequests = 0;
 
-    // For analytics
-    let apiCalls = 0;
-    let startTime = Date.now();
-    let endTime;
-    let elapsedTimeInSeconds = (endTime - startTime) / 1000;
-    let apiCallsPerSecond = apiCalls / elapsedTimeInSeconds;
-    let apiCallsPerMinute = apiCallsPerSecond * 60;
-    let apiCallsPerThirtySeconds = apiCallsPerSecond * 30;
-
     const getRandomYear = () => {
       const currentYear = new Date().getFullYear();
       return (
@@ -588,17 +579,6 @@
       // Error: Update HTML elements
       document.getElementById("progress-indicator").innerText =
         "Error occurred. Please try again.";
-    } finally {
-      // Log API call analytics
-      endTime = Date.now();
-      elapsedTimeInSeconds = (endTime - startTime) / 1000;
-      apiCallsPerSecond = apiCalls / elapsedTimeInSeconds;
-      apiCallsPerMinute = apiCallsPerSecond * 60;
-      apiCallsPerThirtySeconds = apiCallsPerSecond * 30;
-      console.log("Time elapsed:", elapsedTimeInSeconds, "seconds");
-      console.log("API calls per second:", apiCallsPerSecond);
-      console.log("API calls per minute:", apiCallsPerMinute);
-      console.log("API calls per 30 seconds:", apiCallsPerThirtySeconds);
     }
   }
 
