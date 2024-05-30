@@ -597,7 +597,7 @@
       apiCallsPerSecond = apiCalls / elapsedTimeInSeconds;
       apiCallsPerMinute = apiCallsPerSecond * 60;
       apiCallsPerThirtySeconds = apiCallsPerSecond * 30;
-      console.log(`Bad queries (${badQueries.length}): `, badQueries);
+      console.log("Bad queries:", badQueries);
       console.log("Total search requests:", allQueriesAndTracks.length);
       console.log("Time elapsed:", elapsedTimeInSeconds, "seconds");
       console.log("Total API calls:", apiCalls);
