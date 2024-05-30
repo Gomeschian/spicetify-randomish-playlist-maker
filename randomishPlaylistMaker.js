@@ -105,7 +105,7 @@
   />
   <br />
   <br />
-  <label for="number-of-songs-box">Enter desired playlist size (max 100 tracks, 100 may take a minute)</label>
+  <label for="number-of-songs-box">Enter desired playlist size (max 100 tracks, 100 may take a couple of minutes)</label>
 <br />
 <br />
 
@@ -144,7 +144,7 @@
   const DEFAULT_SONGS_TO_ADD = 25;
   const BATCH_SIZE = 100; // 100 is the max songs that can be added at once per Spotify's Web API
   const EARLIEST_RELEASE_YEAR = 1860; // Year of oldest playable music recording known
-  const API_DELAY = 200; // Set to e.g. 200 if need delay for API rate limiting
+  const API_DELAY = 1000; // Set to e.g. 200 ms if need delay for API rate limiting
   const MAX_FAILED_SEARCH_REQUESTS = 5; // Give up if track search gets too many invalid responses
 
   const DEFAULT_FILTERS = {
@@ -176,6 +176,15 @@
     const trackTitleStringsToExclude = [];
     let songsFound = 0;
     let failedSearchRequests = 0;
+
+    // For analytics
+    let apiCalls = 0;
+    let startTime = Date.now();
+    let endTime;
+    let elapsedTimeInSeconds = (endTime - startTime) / 1000;
+    let apiCallsPerSecond = apiCalls / elapsedTimeInSeconds;
+    let apiCallsPerMinute = apiCallsPerSecond * 60;
+    let apiCallsPerThirtySeconds = apiCallsPerSecond * 30;
 
     const getRandomYear = () => {
       const currentYear = new Date().getFullYear();
@@ -335,6 +344,7 @@
         await new Promise((resolve) => setTimeout(resolve, API_DELAY));
 
         const response = await Spicetify.CosmosAsync.get(searchUrl);
+        apiCalls++;
 
         if (!response.tracks) {
           console.log("invalid response:", response);
@@ -378,6 +388,7 @@
             logToConsole(
               `Track excluded for search: ${searchQuery}. Skipping.`
             );
+            await new Promise((resolve) => setTimeout(resolve, API_DELAY)); // Extra cooldown when excluding a search result
             return null;
           }
 
@@ -388,8 +399,9 @@
 
           if (addedDuringRuntimeURIs.includes(trackUri)) {
             logToConsole(
-              `Duplicate track found for search: ${searchQuery}. Skipping.`
+              `Duplicate track found for search: ${searchQuery}. Skipping.` 
             );
+            await new Promise((resolve) => setTimeout(resolve, API_DELAY)); // Extra cooldown when a duplicate track is found
 
             return null;
           }
@@ -443,6 +455,7 @@
         } else {
           const errorMessage = `No track found for search: ${searchQuery}`;
           console.error(errorMessage);
+          await new Promise((resolve) => setTimeout(resolve, API_DELAY)); // Additional cooldown after a search with no results
           return null;
         }
       };
@@ -454,6 +467,7 @@
           uris: trackBatch,
         });
         console.log(addResponse);
+        apiCalls++;
         return;
       };
 
@@ -492,6 +506,7 @@
           description: "Created with Spicetify Randomish Playlist Maker",
         })
       );
+      apiCalls++;
 
       const data = response;
       return data;
@@ -540,6 +555,9 @@
 
     //FUNCTION EXECUTION BEGINS HERE
 
+    startTime = Date.now();
+    apiCalls = 0;
+
     //Exit if number of songs desired is not within the allowed range
     if (
       numberOfSongs < MIN_SONGS_REQUESTABLE ||
@@ -570,6 +588,17 @@
       // Error: Update HTML elements
       document.getElementById("progress-indicator").innerText =
         "Error occurred. Please try again.";
+    } finally {
+      // Log API call analytics
+      endTime = Date.now();
+      elapsedTimeInSeconds = (endTime - startTime) / 1000;
+      apiCallsPerSecond = apiCalls / elapsedTimeInSeconds;
+      apiCallsPerMinute = apiCallsPerSecond * 60;
+      apiCallsPerThirtySeconds = apiCallsPerSecond * 30;
+      console.log("Time elapsed:", elapsedTimeInSeconds, "seconds");
+      console.log("API calls per second:", apiCallsPerSecond);
+      console.log("API calls per minute:", apiCallsPerMinute);
+      console.log("API calls per 30 seconds:", apiCallsPerThirtySeconds);
     }
   }
 
